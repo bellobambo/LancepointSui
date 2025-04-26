@@ -1,36 +1,61 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const items = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Browse Gigs", href: "/freelancer/jobs" },
-  { label: "My Gigs", href: "/freelancer/projects" },
-  { label: "Post Job", href: "/client/post-job" },
-  { label: "Disputes", href: "/disputes" },
-];
-
 export default function Sidebar() {
-  const path = usePathname();
+  const pathname = usePathname();
+
+  const links = [
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/browse-gigs", label: "Browse Gigs" },
+    { href: "/applications", label: "Applications" },
+    { href: "/create-new-job", label: "Create Gigs", icon: <CreateGig /> },
+    { href: "/dispute", label: "Dispute" },
+  ];
 
   return (
-    <aside className="h-screen w-64 bg-[171923] border-r shadow-md flex flex-col" style={{backgroundColor: '#171923'}}>
-      <div className="p-6 text-2xl font-bold text-blue-600">Lancepoint</div>
-      <nav className="flex-1 px-4 space-y-2 mt-4"> 
-        {items.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`block px-4 py-3 rounded-lg text-gray-700 font-medium ${
-              path === item.href
-                ? "bg-blue-100 text-blue-700"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            {item.label}
-          </Link>
+    <aside className="w-[18rem] bg-black shadow-md h-screen">
+      <ul className="space-y-10 flex flex-col p-5">
+        <li className="flex items-center justify-center h-[9rem]"></li>
+
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link
+              href={link.href}
+              className={`flex items-center gap-2 p-4 rounded-md text-[16px] font-medium ${
+                pathname === link.href
+                  ? "bg-white text-black"
+                  : "text-white hover:bg-white hover:text-black"
+              } transition-colors duration-200`}
+            >
+              {link.icon && link.icon}
+              {link.label}
+            </Link>
+          </li>
         ))}
-      </nav>
+      </ul>
     </aside>
   );
+}
+
+function CreateGig() {
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 22C17.3552 22 21.7272 17.7905 21.9877 12.4999C22.0013 12.2241 21.7761 12 21.5 12H12.5C12.2239 12 12 11.7761 12 11.5V2.5C12 2.22386 11.7759 1.9987 11.5001 2.01228C6.20948 2.27276 2 6.64479 2 12C2 17.5228 6.47715 22 12 22Z"
+      stroke="black"
+      stroke-width="1.5"
+    />
+    <path
+      d="M21.9846 9.49991C21.7367 5.47997 18.52 2.26332 14.5001 2.01538C14.2245 1.99838 14 2.22386 14 2.5V9.5C14 9.77614 14.2239 10 14.5 10H21.5C21.7761 10 22.0016 9.77553 21.9846 9.49991Z"
+      stroke="black"
+      stroke-width="1.5"
+    />
+  </svg>;
 }
