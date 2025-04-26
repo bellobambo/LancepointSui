@@ -1,8 +1,8 @@
 import Base from "@/components/base";
 
-export default function MarketingLayout({ children }) {
+export default function NewJobLayout({ children }) {
   return (
-    <section>
+    <section className="bg-white text-black">
       <Base>{children}</Base>
     </section>
   );
