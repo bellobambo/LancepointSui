@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 
 export default function DisputeLayout({ children }) {
   return (
-    <section>
+    <section className=" text-black bg-gray-100">
       <Base>{children}</Base>
     </section>
   );
