@@ -1,5 +1,3 @@
-
 export default function AuthLayout({ children }) {
-  return <section>{children}</section>;
-
+  return <section className=" text-black bg-gray-100">{children}</section>;
 }
