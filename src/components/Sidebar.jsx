@@ -16,7 +16,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-[18rem] bg-black shadow-md h-screen">
-      <ul className="space-y-10 flex flex-col p-5">
+      <ul className="space-y-6 flex flex-col p-5">
         <li className="flex items-center justify-center h-[9rem]"></li>
 
         {links.map((link) => (
