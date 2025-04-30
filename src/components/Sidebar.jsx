@@ -9,9 +9,9 @@ export default function Sidebar() {
   const links = [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/browse-gigs", label: "Browse Gigs" },
+    { href: "/live-gigs", label: "Live Gigs" },
     { href: "/applications", label: "Applications" },
-    { href: "/create-new-job", label: "Create Gigs", icon: <CreateGig /> },
-    { href: "/dispute", label: "Dispute" },
+    { href: "/create-new-job", label: "Create Gigs" },
   ];
 
   return (
