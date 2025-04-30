@@ -60,6 +60,7 @@ export default function DashboardPage() {
       <div className="flex justify-center mt-20 mb-10 px-4">
         <div className="space-y-10 max-w-[90%] w-full ">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Revenue Card */}
             <div className="bg-white rounded-[20px] shadow-md p-6 md:p-8 space-y-2">
               <span className="text-[14px] font-[400]">Monthly Revenue</span>
               <div className="mt-3 flex justify-between items-center">
