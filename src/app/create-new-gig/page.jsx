@@ -1,10 +1,10 @@
-import NewJob from "@/components/NewJob";
+import NewGig from "@/components/NewGig";
 import React from "react";
 
 const page = () => {
   return (
     <div className=" ">
-      <NewJob />
+      <NewGig />
     </div>
   );
 };

@@ -1,9 +1,10 @@
-import Hero from '@/components/hero/Hero';
-import Partners from '@/components/partners/Partners';
-import About from '@/components/about/About';
-import TrustlessAgreements from '@/components/trustlessAgreements/TrustlessAgreements';
-import Services from '@/components/services/Services';
-import Waitlist from '@/components/waitlist/Waitlist';
+import Hero from "@/components/hero/Hero";
+import Partners from "@/components/partners/Partners";
+import About from "@/components/about/About";
+import TrustlessAgreements from "@/components/trustlessAgreements/TrustlessAgreements";
+import Services from "@/components/services/Services";
+import Waitlist from "@/components/waitlist/Waitlist";
+import ZK from "@/components/ZK";
 
 function App() {
   return (
@@ -14,15 +15,12 @@ function App() {
       <TrustlessAgreements />
       <Services />
       <Waitlist />
+      {/* <ZK /> */}
     </div>
   );
 }
 
 export default App;
-
-
-
-
 
 //  export default function LandingPage() {
 //   return (
