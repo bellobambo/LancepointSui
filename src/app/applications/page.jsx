@@ -1,10 +1,10 @@
-import Dashboard from "@/components/Dashboard";
+import Applications from "@/components/Applications";
 import React from "react";
 
 const page = () => {
   return (
     <div>
-      <Dashboard />
+      <Applications />
     </div>
   );
 };
