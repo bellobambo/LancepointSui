@@ -11,7 +11,7 @@ export default function Sidebar() {
     { href: "/browse-gigs", label: "Browse Gigs" },
     { href: "/live-gigs", label: "Live Gigs" },
     { href: "/applications", label: "Applications" },
-    { href: "/create-new-job", label: "Create Gigs" },
+    { href: "/create-new-gig", label: "Create Gigs" },
   ];
 
   return (
