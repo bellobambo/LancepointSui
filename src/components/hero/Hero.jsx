@@ -76,11 +76,11 @@ const Hero = () => {
       {/* Profile images floating around */}
 
       <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] flex justify-center items-center">
-        <div className="absolute w-[160px] h-[160px] md:w-[200px] md:h-[200px] lg:w-[240px] lg:h-[240px] rounded-full border border-white/50"></div>
-          <div className="absolute w-[320px] h-[320px] md:w-[380px] md:h-[380px] lg:w-[440px] lg:h-[440px] rounded-full border border-white/50"></div>
+        {/* <div className="absolute w-[160px] h-[160px] md:w-[200px] md:h-[200px] lg:w-[240px] lg:h-[240px] rounded-full border border-white/50"></div>
+          <div className="absolute w-[320px] h-[320px] md:w-[380px] md:h-[380px] lg:w-[440px] lg:h-[440px] rounded-full border border-white/50"></div> */}
 
         {/* Play button */}
-        <button 
+          {/* <button 
             className="absolute z-20 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-white rounded-full flex items-center justify-center cursor-pointer shadow-lg"
           >
             <div className="text-purple-500">
@@ -91,10 +91,10 @@ const Hero = () => {
                 objectFit="cover"
               />
             </div>
-          </button>
+          </button> */}
 
         {/* Profiles */}
-        {profiles.map((profile) => (
+        {/* {profiles.map((profile) => (
             <div 
               key={profile.id}
               className={`absolute ${profile.position} ${profile.size} rounded-full overflow-hidden z-10 ${profile.isSelected ? 'border-2 border-blue-400' : ''}`}
@@ -109,7 +109,20 @@ const Hero = () => {
                 <div className="absolute -bottom-6 left-0 w-full text-center text-xs text-blue-400">59 × 59</div>
               )}
             </div>
-          ))}
+          ))} */}
+
+        <div className="atom-container flex items-center justify-center"> {/* Add a container element */}
+          <div className="atom-orbit w-full h-full">
+            <div className="electron"></div>
+            <div className="electron2"></div>
+            <div className="electron3"></div>
+            <div className="electron4"></div>
+            <div className="electron5"></div>
+            <div className="electron6"></div>
+            <div className="electron7"></div>
+          </div>
+          <div className="atom-nucleus"></div>
+        </div>
       </div>
     </div>
   );
