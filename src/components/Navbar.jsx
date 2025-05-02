@@ -1,4 +1,4 @@
-import Link from "next/link";
+import ZKLogin from "@/lib/ZKlogin";
 import React from "react";
 
 const Navbar = () => {
@@ -10,14 +10,7 @@ const Navbar = () => {
           <span>Lancepoint</span>
         </div>
         <nav className="space-x-6">
-          <Link href="/">Home</Link>
-          <Link href="/login">Login</Link>
-          <Link
-            href="/signup"
-            className="bg-white text-black p-2 px-6 rounded-2xl w-[6rem]"
-          >
-            Sign Up
-          </Link>
+          <ZKLogin />
         </nav>
       </header>
     </div>

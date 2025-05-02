@@ -1,30 +1,35 @@
-import Hero from '@/components/hero/Hero';
-import Partners from '@/components/partners/Partners';
-import About from '@/components/about/About';
-import TrustlessAgreements from '@/components/trustlessAgreements/TrustlessAgreements';
-import Services from '@/components/services/Services';
-import Waitlist from '@/components/waitlist/Waitlist';
+import Hero from "@/components/hero/Hero";
+import Partners from "@/components/partners/Partners";
+import About from "@/components/about/About";
+import TrustlessAgreements from "@/components/trustlessAgreements/TrustlessAgreements";
+import Services from "@/components/services/Services";
+import Waitlist from "@/components/waitlist/Waitlist";
+import Header from "@/components/Navbar/Header";
+import Footer from "@/components/footer/Footer";
+import ZK from "@/components/ZK";
+import "./globals.css";
 
 function App() {
   return (
-    <div className="min-h-screen">
-      <Hero />
-      <Partners />
-      <About />
-      <TrustlessAgreements />
-      <Services />
-      <Waitlist />
+    <div className="min-h-screen bg-image app-font">
+      <Header />
+      <main className="px-4 sm:px-6 md:px-12 lg:px-20">
+        <Hero />
+        <Partners />
+        <About />
+        <TrustlessAgreements />
+        <Services />
+        <Waitlist />
+      </main>
+      <Footer />
+      {/* <ZK /> */}
     </div>
   );
 }
 
 export default App;
 
-
-
-
-
-//  export default function LandingPage() {
+//  export default function LandingPage() { 
 //   return (
 //     <section className="flex flex-col-reverse md:flex-row items-center gap-10">
 //       <div className="flex-1 space-y-6">
