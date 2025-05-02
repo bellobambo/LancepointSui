@@ -1,6 +1,35 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
+import { useZkLogin } from "use-sui-zklogin";
 
 const BrowseGigs = () => {
+  const { accounts } = useZkLogin({
+    urlZkProver: "https://prover-dev.mystenlabs.com/v1",
+    generateSalt: async () => {
+      return { salt: window.crypto.getRandomValues(new Uint32Array(1))[0] };
+    },
+  });
+  const zksub = accounts?.[0]?.sub;
+  console.log("zksub", zksub);
+
+  useEffect(() => {
+    const fetchGigData = async () => {
+      try {
+        const response = await fetch("/api/new-gig");
+        if (!response.ok) {
+          throw new Error("Failed to fetch gig data");
+        }
+        const data = await response.json();
+        console.log("gigs", data);
+      } catch (error) {
+        toast.error(`Error loading gig data: ${error.message}`);
+      }
+    };
+
+    fetchGigData();
+  }, [zksub]);
+
   return (
     <div>
       <div className="flex justify-center mt-20 mb-10 px-4">
