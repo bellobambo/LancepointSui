@@ -8,13 +8,11 @@ export async function registerWithZKLogin(zksub, walletAddress) {
   }
 
   try {
-    // Check if user exists with either zksub or walletAddress
     const existingUser = await userCollection.findOne({
       $or: [{ zksub }, { walletAddress }],
     });
 
     if (!existingUser) {
-      // User doesn't exist - create new one
       const insertResult = await userCollection.insertOne({
         zksub,
         walletAddress,
@@ -30,12 +28,10 @@ export async function registerWithZKLogin(zksub, walletAddress) {
       return { success: true, isNewUser: true };
     }
 
-    // User already exists
     return { success: true, isNewUser: false };
   } catch (error) {
     console.error("ZK registration error:", error);
 
-    // Handle duplicate key errors specifically
     if (error.code === 11000 || error.message.includes("duplicate key")) {
       return { success: true, isNewUser: false };
     }
