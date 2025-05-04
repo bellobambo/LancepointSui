@@ -2,7 +2,6 @@
 
 import { getCollection } from "@/lib/db";
 import gigSchema from "@/lib/CreateGig";
-import { redirect } from "next/navigation";
 
 export async function createGig(formData) {
   try {
