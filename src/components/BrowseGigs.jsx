@@ -15,8 +15,8 @@ const BrowseGigs = () => {
   const zksub = accounts?.[0]?.sub;
   const [gigs, setGigs] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [showModal, setShowModal] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [showMilestoneModal, setShowMilestoneModal] = useState(false);
   const [milestones, setMilestones] = useState([]);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -39,9 +39,45 @@ const BrowseGigs = () => {
     fetchGigData();
   }, [zksub]);
 
+  const handleSubmitApplication = async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    setApplying(true);
+
+    try {
+      const res = await fetch("/api/apply-gig", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        toast.error(
+          `Application failed: ${
+            result.error?.applicationText ||
+            result.error?.database ||
+            "Unknown error"
+          }`
+        );
+      } else {
+        toast.success("Application submitted successfully!");
+        setShowApplicationModal(false);
+        setSelectedJob(null);
+      }
+    } catch (err) {
+      toast.error("Something went wrong.");
+      console.error(err);
+    } finally {
+      setApplying(false);
+    }
+  };
+
   const handleViewMilestones = (milestonesData) => {
     setMilestones(milestonesData || []);
-    setShowModal(true);
+    setShowMilestoneModal(true);
   };
 
   const handleApplyClick = (gig) => {
@@ -50,7 +86,7 @@ const BrowseGigs = () => {
   };
 
   const closeModal = () => {
-    setShowModal(false);
+    setShowMilestoneModal(false);
     setMilestones([]);
   };
 
@@ -75,13 +111,13 @@ const BrowseGigs = () => {
               </div>
 
               <div className="flex items-center space-x-2">
-                <div className="p-1 bg-black text-white w-[9rem] text-[12px] text-center rounded-4xl font-medium">
+                <div className="p-2 bg-black text-white w-[9rem] text-[12px] text-center rounded-4xl font-medium">
                   {gig.services?.[0] || "Service"}
                 </div>
-                <div className="p-1 bg-[#337936] text-white w-[9rem] text-[12px] text-center rounded-4xl font-medium">
+                <div className="p-2  bg-[#337936] text-white w-[9rem] text-[12px] text-center rounded-4xl font-medium">
                   {gig.payment?.amount} {gig.payment?.token}
                 </div>
-                <div className="p-1 bg-black text-white w-[9rem] text-[12px] text-center rounded-4xl font-medium">
+                <div className="p-2   bg-black text-white w-[12rem] text-[12px] text-center rounded-4xl font-medium">
                   {gig.startDate} - {gig.endDate}
                 </div>
               </div>
@@ -94,7 +130,7 @@ const BrowseGigs = () => {
                 {gig.services?.map((service, i) => (
                   <div
                     key={i}
-                    className="p-1 bg-black text-white w-[9rem] text-[10px] text-center rounded-4xl font-medium"
+                    className="p-2  bg-black text-white w-[9rem] text-[12px] text-center rounded-4xl font-medium"
                   >
                     {service}
                   </div>
@@ -104,7 +140,7 @@ const BrowseGigs = () => {
               <div className="flex justify-start items-center">
                 <div
                   onClick={() => handleViewMilestones(gig.milestones)}
-                  className="p-1 bg-black text-white w-[9rem] text-[14px] text-center rounded-4xl font-[600] cursor-pointer"
+                  className="p-2  bg-black text-white w-[9rem] text-[14px] text-center rounded-4xl font-[600] cursor-pointer"
                 >
                   View Milestones
                 </div>
@@ -131,7 +167,8 @@ const BrowseGigs = () => {
         );
       })}
 
-      {showModal && (
+      {/* Milestones Modal */}
+      {showMilestoneModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/30 backdrop-blur-sm">
           <div className="bg-white rounded-xl p-6 w-full max-w-md space-y-4 border-black border">
             <h2 className="text-xl font-semibold text-center mb-2">
@@ -163,9 +200,10 @@ const BrowseGigs = () => {
         </div>
       )}
 
+      {/* Application Modal */}
       {showApplicationModal && selectedJob && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/20 backdrop-blur-sm">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md space-y-4 border border-black">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg space-y-4 border border-black">
             <h2 className="text-xl font-semibold text-start">
               Job Application
             </h2>
@@ -176,61 +214,126 @@ const BrowseGigs = () => {
               </p>
             </div>
 
-            <div>
+            <form onSubmit={handleSubmitApplication}>
+              <label htmlFor="" className="text-[14px]">
+                Full Name
+              </label>
+              <input
+                className="w-full border-black border p-2 rounded-md placeholder:text-xs mb-2"
+                name="name"
+                placeholder="Your full name"
+                required
+              />
+              <label htmlFor="" className="text-[14px]">
+                Cover Letter
+              </label>
+
               <textarea
                 className="border border-black rounded-md w-full p-2 placeholder:text-xs"
-                name=""
+                name="applicationText"
                 placeholder="What services will you be offering?"
                 rows={3}
-                id=""
               ></textarea>
-            </div>
-            <div>
+              <label htmlFor="" className="text-[14px]">
+                Portfolio Link
+              </label>
+
               <input
                 className="w-full border-black border p-2 rounded-md placeholder:text-xs"
-                placeholder="Github / Portfolio link"
+                name="portfolioLink"
+                placeholder="Github / Portfolio /LinkdIn...."
               />
-            </div>
-            <div className="flex justify-between font-[600] text-[12px]">
-              <span className="">Submission Deadline</span>
-              <span>{selectedJob.endDate}</span>
-            </div>
-            <div className="flex justify-between font-[600] text-[12px]">
-              <span>Payment</span>
-              <span>
-                {selectedJob.payment?.amount} {selectedJob.payment?.token}
-              </span>
-            </div>
 
+              <input
+                type="hidden"
+                name="jobTitle"
+                value={selectedJob.jobTitle}
+              />
+              <input
+                type="hidden"
+                name="jobDescription"
+                value={selectedJob.jobDescription}
+              />
+              <input type="hidden" name="userId" value={selectedJob.userId} />
+              <input
+                type="hidden"
+                name="startDate"
+                value={selectedJob.startDate}
+              />
+              <input type="hidden" name="endDate" value={selectedJob.endDate} />
+              <input
+                type="hidden"
+                name="paymentAmount"
+                value={selectedJob.payment?.amount}
+              />
+              <input
+                type="hidden"
+                name="paymentToken"
+                value={selectedJob.payment?.token}
+              />
+
+              {selectedJob.services?.map((service, i) => (
+                <input
+                  key={`service-${i}`}
+                  type="hidden"
+                  name={`services[${i}]`}
+                  value={service}
+                />
+              ))}
+
+              {selectedJob.milestones?.map((ms, i) => (
+                <div key={`ms-${i}`}>
+                  <input
+                    type="hidden"
+                    name={`milestones[${i}].header`}
+                    value={ms.header}
+                  />
+                  <input
+                    type="hidden"
+                    name={`milestones[${i}].body`}
+                    value={ms.body}
+                  />
+                  <input
+                    type="hidden"
+                    name={`milestones[${i}].date`}
+                    value={ms.date}
+                  />
+                </div>
+              ))}
+
+              <div className="flex justify-between font-[600] text-[12px] mt-4">
+                <span className="">Submission Deadline</span>
+                <span>{selectedJob.endDate}</span>
+              </div>
+              <div className="flex justify-between font-[600] text-[12px] my-3">
+                <span>Payment</span>
+                <span>
+                  {selectedJob.payment?.amount} {selectedJob.payment?.token}
+                </span>
+              </div>
+              <div className="flex justify-between space-x-2 mt-4">
+                <button
+                  type="submit"
+                  disabled={applying}
+                  className="w-full bg-black text-white py-2 rounded-xl font-semibold text-[14px] cursor-pointer"
+                >
+                  {applying ? "Applying..." : "Apply"}{" "}
+                </button>
+              </div>
+            </form>
+
+            {/* Cancel Button */}
             <div className="flex justify-between space-x-2">
               <button
                 onClick={() => {
                   setShowApplicationModal(false);
                   setSelectedJob(null);
                 }}
-                className="mt-4 w-full bg-black text-white py-2 rounded-xl font-semibold cursor-pointer text-[14px]"
+                className="mt-4 w-full bg-white border border-black text-black py-2 rounded-xl font-semibold text-[14px] cursor-pointer"
               >
-                Upload
-              </button>
-              <button
-                onClick={() => {
-                  setShowApplicationModal(false);
-                  setSelectedJob(null);
-                }}
-                className="mt-4 w-full bg-black text-white py-2 rounded-xl font-semibold cursor-pointer text-[14px]"
-              >
-                Apply
+                Cancel
               </button>
             </div>
-            <button
-              onClick={() => {
-                setShowApplicationModal(false);
-                setSelectedJob(null);
-              }}
-              className="mt-4 w-full bg-white border border-black text-black py-2 rounded-xl font-semibold text-[14px] cursor-pointer"
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
