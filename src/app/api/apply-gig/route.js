@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { applyToGig } from "@/actions/applyToGig";
 import { getCollection } from "@/lib/db";
+import { updateApplicationStatus } from "@/actions/updateApplicationStatus";
 
 export async function POST(request) {
   try {
@@ -39,6 +40,36 @@ export async function GET() {
     return NextResponse.json(applications);
   } catch (error) {
     console.error("Error fetching applications:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request) {
+  try {
+    const { applicationId, status } = await request.json();
+
+    if (!applicationId || !status) {
+      return NextResponse.json(
+        { error: "applicationId and status are required" },
+        { status: 400 }
+      );
+    }
+
+    const result = await updateApplicationStatus(applicationId, status);
+
+    if (!result.success) {
+      return NextResponse.json({ error: result.error }, { status: 400 });
+    }
+
+    return NextResponse.json(
+      { success: true, message: "Status updated successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating application status:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
