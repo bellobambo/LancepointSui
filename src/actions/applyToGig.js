@@ -30,6 +30,7 @@ export async function applyToGig(formData) {
       jobTitle: formData.get("jobTitle"),
       jobDescription: formData.get("jobDescription"),
       userId: formData.get("userId"),
+      applicantId: formData.get("applicantId"),
       startDate: formData.get("startDate"),
       endDate: formData.get("endDate"),
       paymentAmount: formData.get("paymentAmount"),
