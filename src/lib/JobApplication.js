@@ -8,6 +8,7 @@ export const applicationSchema = z.object({
   jobTitle: z.string().min(1),
   jobDescription: z.string().min(1),
   userId: z.string().min(1),
+  applicantId: z.string().min(1),
   startDate: z.string().min(1),
   endDate: z.string().min(1),
   paymentAmount: z.union([z.string(), z.number()]),

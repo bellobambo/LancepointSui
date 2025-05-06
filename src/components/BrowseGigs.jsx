@@ -13,6 +13,7 @@ const BrowseGigs = () => {
   });
 
   const zksub = accounts?.[0]?.sub;
+  console.log("ZK Sub:", zksub);
   const [gigs, setGigs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
@@ -43,6 +44,8 @@ const BrowseGigs = () => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
+
+    formData.append("applicantId", zksub);
 
     setApplying(true);
 
@@ -94,7 +97,7 @@ const BrowseGigs = () => {
     return (
       <div className="flex flex-col items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
-        <p className="mt-4 text-gray-600">Loading applications...</p>
+        <p className="mt-4 text-gray-600">Loading Gigs...</p>
       </div>
     );
   }
