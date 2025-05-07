@@ -7,29 +7,33 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const links = [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/browse-gigs", label: "Browse Gigs" },
-    { href: "/live-gigs", label: "Live Gigs" },
-    { href: "/applications", label: "Applications" },
-    { href: "/create-new-gig", label: "Create Gigs" },
+    { href: "/dashboard", label: "Dashboard", icon: "3.png" },
+    { href: "/browse-gigs", label: "Browse Gigs", icon: "/4.png" },
+    { href: "/live-gigs", label: "Live Gigs", icon: "/2.png" },
+    { href: "/applications", label: "Applications", icon: "/1.png" },
+    { href: "/create-new-gig", label: "Create Gigs", icon: "/5.png" },
   ];
 
   return (
-    <aside className="w-[18rem] bg-black shadow-md h-screen">
-      <ul className="space-y-6 flex flex-col p-5">
-        <li className="flex items-center justify-center h-[9rem]"></li>
-
+    <aside className="w-[18rem] font-plus bg-[#191c21] shadow-md h-screen">
+      <div className="text-2xl p-6 text-white font-bold flex items-center space-x-2">
+        <img src="/Lance@3x3.png" alt="Logo" className="w-6 h-6 app-font" />
+        <span>Lancepoint</span>
+      </div>
+      <ul className="space-y-4 flex flex-col p-1">
         {links.map((link) => (
           <li key={link.href}>
             <Link
               href={link.href}
-              className={`flex items-center gap-2 p-4 rounded-md text-[16px] font-medium ${
+              className={`flex app-font items-center gap-3 p-4 rounded-md text-[16px] font-medium
+                 ${
                 pathname === link.href
-                  ? "bg-white text-black"
-                  : "text-white hover:bg-white hover:text-black"
-              } transition-colors duration-200`}
+                  ? "bg-black text-white"
+                  : "text-white  "
+              } transition-colors duration-200
+              `}
             >
-              {link.icon && link.icon}
+              <img src={link.icon} alt={`${link.label} icon`} className="w-5 h-5" />
               {link.label}
             </Link>
           </li>
@@ -37,25 +41,4 @@ export default function Sidebar() {
       </ul>
     </aside>
   );
-}
-
-function CreateGig() {
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 22C17.3552 22 21.7272 17.7905 21.9877 12.4999C22.0013 12.2241 21.7761 12 21.5 12H12.5C12.2239 12 12 11.7761 12 11.5V2.5C12 2.22386 11.7759 1.9987 11.5001 2.01228C6.20948 2.27276 2 6.64479 2 12C2 17.5228 6.47715 22 12 22Z"
-      stroke="black"
-      stroke-width="1.5"
-    />
-    <path
-      d="M21.9846 9.49991C21.7367 5.47997 18.52 2.26332 14.5001 2.01538C14.2245 1.99838 14 2.22386 14 2.5V9.5C14 9.77614 14.2239 10 14.5 10H21.5C21.7761 10 22.0016 9.77553 21.9846 9.49991Z"
-      stroke="black"
-      stroke-width="1.5"
-    />
-  </svg>;
 }
