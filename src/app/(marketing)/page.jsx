@@ -1,4 +1,3 @@
-// app/(marketing)/page.tsx
 export default function LandingPage() {
     return (
       <section className="flex flex-col-reverse md:flex-row items-center py-20 gap-10">
