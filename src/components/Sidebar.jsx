@@ -1,10 +1,60 @@
+// "use client";
+
+// import Link from "next/link";
+// import { usePathname } from "next/navigation";
+
+// export default function Sidebar() {
+//   const pathname = usePathname();
+
+//   const links = [
+//     { href: "/dashboard", label: "Dashboard", icon: "3.png" },
+//     { href: "/browse-gigs", label: "Browse Gigs", icon: "/4.png" },
+//     { href: "/live-gigs", label: "Live Gigs", icon: "/2.png" },
+//     { href: "/applications", label: "Applications", icon: "/1.png" },
+//     { href: "/create-new-gig", label: "Create Gigs", icon: "/5.png" },
+//   ];
+
+//   return (
+//     <aside className="w-[18rem] font-plus bg-[#191c21] shadow-md h-screen">
+//       <div className="text-2xl p-6 text-white font-bold flex items-center space-x-2">
+//         <img src="/Lance@3x3.png" alt="Logo" className="w-6 h-6 app-font" />
+//         <span>Lancepoint</span>
+//       </div>
+//       <ul className="space-y-4 flex flex-col p-1">
+//         {links.map((link) => (
+//           <li key={link.href}>
+//             <Link
+//               href={link.href}
+//               className={`flex app-font items-center gap-3 p-4 rounded-md text-[16px] font-medium
+//                  ${
+//                 pathname === link.href
+//                   ? "bg-black text-white"
+//                   : "text-white  "
+//               } transition-colors duration-200
+//               `}
+//             >
+//               <img src={link.icon} alt={`${link.label} icon`} className="w-5 h-5" />
+//               {link.label}
+//             </Link>
+//           </li>
+//         ))}
+//       </ul>
+//     </aside>
+//   );
+// }
+
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const links = [
     { href: "/dashboard", label: "Dashboard", icon: "3.png" },
@@ -14,31 +64,119 @@ export default function Sidebar() {
     { href: "/create-new-gig", label: "Create Gigs", icon: "/5.png" },
   ];
 
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsMobile(true);
+        setSidebarOpen(false);
+      } else {
+        setIsMobile(false);
+        setSidebarOpen(true);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    if (isMobile) {
+      setSidebarOpen(!sidebarOpen);
+    } else {
+      setIsCollapsed(!isCollapsed);
+    }
+  };
+
   return (
-    <aside className="w-[18rem] font-plus bg-[#191c21] shadow-md h-screen">
-      <div className="text-2xl p-6 text-white font-bold flex items-center space-x-2">
-        <img src="/Lance@3x3.png" alt="Logo" className="w-6 h-6 app-font" />
-        <span>Lancepoint</span>
-      </div>
-      <ul className="space-y-4 flex flex-col p-1">
-        {links.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              className={`flex app-font items-center gap-3 p-4 rounded-md text-[16px] font-medium
-                 ${
-                pathname === link.href
-                  ? "bg-black text-white"
-                  : "text-white  "
-              } transition-colors duration-200
-              `}
-            >
-              <img src={link.icon} alt={`${link.label} icon`} className="w-5 h-5" />
-              {link.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </aside>
+    <>
+      {/* Mobile overlay when sidebar is open */}
+      {isMobile && sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Toggle button for mobile */}
+      <button
+        className="md:hidden fixed top-4 left-4 z-30 rounded-md p-2"
+        onClick={toggleSidebar}
+      >
+        {sidebarOpen ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        ) : (
+          <div className="bg-white flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <span className="flex items-center justify-center ml-1 text-2xl font-bold"><img src="/Lance@3x3.png" alt="Logo" className="w-7 h-7 app-font mr-2" /> Lancepoint</span>
+          </div>
+        )}
+      </button>
+
+      {/* Toggle button for desktop */}
+      <button
+        className="hidden md:block fixed top-4 left-4 z-30 bg-[#191c21] rounded-md p-2"
+        onClick={toggleSidebar}
+      >
+        {isCollapsed ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+          </svg>
+        )}
+      </button>
+
+      {/* Sidebar */}
+      <aside 
+        className={`font-plus bg-[#191c21] shadow-md h-screen fixed z-20 transition-all duration-300 ease-in-out
+          ${isMobile 
+            ? sidebarOpen ? 'w-[18rem] left-0' : 'w-[18rem] -left-[18rem]' 
+            : isCollapsed ? 'w-[4.5rem]' : 'w-[18rem]'
+          }`}
+      >
+        <div className={`text-2xl p-6 text-white font-bold flex items-center ${isCollapsed && !isMobile ? 'justify-center' : 'space-x-2'}`}>
+          {/* <img src="/Lance@3x3.png" alt="Logo" className="w-6 h-6 app-font" /> */}
+          {(!isCollapsed || isMobile) && <span className="flex items-center ml-9"><img src="/Lance@3x3.png" alt="Logo" className="w-6 h-6 app-font mr-2" /> Lancepoint</span>}
+        </div>
+        <ul className="space-y-4 flex flex-col p-1">
+          {links.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className={`flex app-font items-center ${isCollapsed && !isMobile ? 'justify-center' : 'gap-3'} p-4 rounded-md text-[16px] font-medium
+                  ${
+                    pathname === link.href
+                      ? "bg-black text-white"
+                      : "text-white"
+                  } transition-colors duration-200
+                `}
+              >
+                <img src={link.icon} alt={`${link.label} icon`} className="w-5 h-5" />
+                {(!isCollapsed || isMobile) && link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </aside>
+
+      {/* Main content spacer */}
+      <div 
+        className={`transition-all duration-300 ease-in-out
+          ${isMobile 
+            ? 'ml-0' 
+            : isCollapsed ? 'ml-[4.5rem]' : 'ml-[18rem]'
+          }`}
+      />
+    </>
   );
 }
