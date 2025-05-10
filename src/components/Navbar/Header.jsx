@@ -14,7 +14,7 @@ const Header = () => {
 
   return (
     <header className="py-4 px-4 sm:px-6 md:px-12 lg:px-20">
-      <div className="flex items-center">
+      <div className="flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center">
           <Image
@@ -30,7 +30,7 @@ const Header = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 ml-20 mr-auto">
+        {/* <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 ml-20 mr-auto">
           <Link
             href="/"
             className="header-nav-color hover:text-gray-600 text-[16px] font-semibold lg:text-base"
@@ -49,7 +49,7 @@ const Header = () => {
           >
             Payments
           </Link>
-        </nav>
+        </nav> */}
 
         {/* Sign Up Button */}
         <div className="hidden md:block">
@@ -103,7 +103,9 @@ const Header = () => {
       {isMenuOpen && (
         <div className="md:hidden mt-4 py-2">
           <nav className="flex flex-col space-y-3">
-            <Link
+            <ZKLogin />
+
+            {/* <Link
               href="/"
               className="text-black hover:text-gray-600 text-[16px] font-semibold"
             >
@@ -120,16 +122,16 @@ const Header = () => {
               className="text-black hover:text-gray-600 text-[16px] font-semibold"
             >
               Payments
-            </Link>
+            </Link> */}
           </nav>
-          <div className="mt-4">
+          {/* <div className="mt-4">
             <Link
               href="/signup"
               className="inline-block bg-black text-white rounded-full px-6 py-2 text-sm font-medium hover:bg-gray-800 transition duration-300"
             >
               Sign up
             </Link>
-          </div>
+          </div> */}
         </div>
       )}
     </header>

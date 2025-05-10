@@ -9,6 +9,8 @@ const Applications = () => {
   const [groupedApplications, setGroupedApplications] = useState({});
   const [viewingApplicantsFor, setViewingApplicantsFor] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [submissions, setSubmissions] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
   const { accounts } = useZkLogin({
     urlZkProver: "https://prover-dev.mystenlabs.com/v1",
@@ -25,8 +27,6 @@ const Applications = () => {
       const response = await fetch("/api/apply-gig");
       const data = await response.json();
 
-      console.log("Fetched applications data:", data);
-
       const filteredApplications = data.filter((app) => app.userId === zksub);
 
       const grouped = filteredApplications.reduce((acc, app) => {
@@ -37,9 +37,6 @@ const Applications = () => {
 
       setApplications(filteredApplications);
       setGroupedApplications(grouped);
-
-      // console.log("Fetched applications:", filteredApplications);
-      // console.log("Grouped applications:", grouped);
     } catch (error) {
       console.error("Error fetching applications:", error);
       toast.error("Failed to load applications");
@@ -48,12 +45,26 @@ const Applications = () => {
     }
   };
 
+  const fetchSubmissions = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/submit-gig");
+      const data = await response.json();
+      setSubmissions(data);
+    } catch (error) {
+      console.error("Error fetching submissions", error);
+      toast.error("Failed to load submissions");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (zksub) {
-      // Only fetch if we have the user's ID
+      fetchSubmissions();
       fetchApplications();
     }
-  }, [zksub]); // Add zksub as dependency
+  }, [zksub]);
 
   const updateApplicationStatus = async (applicationId, status) => {
     try {
@@ -88,8 +99,17 @@ const Applications = () => {
     );
   };
 
+  const getSubmissionsForJob = (jobTitle, jobDescription) => {
+    return submissions.filter(
+      (sub) =>
+        sub.userId === zksub &&
+        sub.jobTitle === jobTitle &&
+        sub.jobDescription === jobDescription
+    );
+  };
+
   return (
-    <div className="flex flex-col items-center w-full gap-6 justify-center mt-10">
+    <div className="flex flex-col items-center w-full gap-6 justify-center my-10 ">
       {isLoading ? (
         <div className="flex flex-col items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
@@ -116,81 +136,160 @@ const Applications = () => {
             Back to jobs
           </button>
           <div className="flex flex-wrap p-6 rounded-lg space-y-6 w-full justify-center gap-10">
-            {groupedApplications[viewingApplicantsFor]?.map((app) => (
-              <div
-                key={app._id}
-                className="bg-white h-[25rem] w-[24rem] p-4 rounded-2xl shadow-md flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="font-bold text-lg">{app.name}</h3>
+            {groupedApplications[viewingApplicantsFor]?.map((app) => {
+              const jobSubmissions = getSubmissionsForJob(
+                app.jobTitle,
+                app.jobDescription
+              );
 
-                  <div className="flex gap-2 my-2">
-                    <div className="p-1 bg-black text-white text-[12px] text-center rounded-[20px] font-[600] min-w-[9rem]">
-                      {app.services[0]}
+              return (
+                <div
+                  key={app._id}
+                  className="bg-white min-h-[25rem] w-[24rem] p-4 rounded-2xl shadow-md flex flex-col justify-between"
+                >
+                  <div>
+                    <h3 className="font-bold text-lg">{app.name}</h3>
+
+                    <div className="flex gap-2 my-2">
+                      <div className="p-1 bg-black text-white text-[12px] text-center rounded-[20px] font-[600] min-w-[9rem]">
+                        {app.services[0]}
+                      </div>
                     </div>
+
+                    <p className="text-sm text-gray-700 mb-4">
+                      {app.applicationText}
+                    </p>
                   </div>
 
-                  <p className="text-sm text-gray-700 mb-4">
-                    {app.applicationText}
-                  </p>
-                </div>
+                  <div className="flex justify-between items-end">
+                    <div className="mt-4 ">
+                      {app.portfolioLink && (
+                        <a
+                          href={app.portfolioLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block mb-3 p-3 bg-black text-white text-[12px] text-center rounded-3xl font-[600] w-[8rem]"
+                        >
+                          Portfolio
+                        </a>
+                      )}
 
-                <div className="mt-[3rem]">
-                  {app.portfolioLink && (
-                    <a
-                      href={app.portfolioLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block mb-3 p-3 bg-black text-white text-[12px] text-center rounded-3xl font-[600] w-[8rem]"
-                    >
-                      Portfolio
-                    </a>
-                  )}
-
-                  {app.status === "accepted" || app.status === "rejected" ? (
-                    <div
-                      className={`text-center py-2 rounded-3xl font-semibold ${
-                        app.status === "accepted"
-                          ? "bg-green-100 text-green-800 w-[8rem]"
-                          : "bg-red-100 text-red-800 w-[8rem]"
-                      }`}
-                    >
-                      {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                      {app.status === "accepted" ||
+                      app.status === "rejected" ? (
+                        <div
+                          className={`text-center py-2 rounded-3xl font-semibold  ${
+                            app.status === "accepted"
+                              ? "bg-green-100 text-green-800 w-[8rem]"
+                              : "bg-red-100 text-red-800 w-[8rem]"
+                          }`}
+                        >
+                          {app.status.charAt(0).toUpperCase() +
+                            app.status.slice(1)}
+                        </div>
+                      ) : (
+                        <div className="flex gap-4">
+                          <button
+                            className={`bg-black text-white px-4 py-2 rounded-3xl w-[8rem] cursor-pointer ${
+                              isLoading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
+                            onClick={() =>
+                              updateApplicationStatus(app._id, "accepted")
+                            }
+                            disabled={isLoading}
+                          >
+                            Accept
+                          </button>
+                          <button
+                            className={`bg-white border border-black text-black px-4 py-2 rounded-3xl w-[8rem] cursor-pointer ${
+                              isLoading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
+                            onClick={() =>
+                              updateApplicationStatus(app._id, "rejected")
+                            }
+                            disabled={isLoading}
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="flex gap-4">
+                    {jobSubmissions.length > 0 && (
                       <button
-                        className={`bg-black text-white px-4 py-2  rounded-3xl w-[8rem] ${
-                          isLoading ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
-                        onClick={() =>
-                          updateApplicationStatus(app._id, "accepted")
-                        }
-                        disabled={isLoading}
+                        onClick={() => setShowModal(true)}
+                        className="px-4 py-2 bg-black cursor-pointer text-white rounded"
                       >
-                        Accept
+                        View Submissions
                       </button>
-                      <button
-                        className={`bg-white border border-black text-black px-4 py-2 rounded-3xl w-[8rem] ${
-                          isLoading ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
-                        onClick={() =>
-                          updateApplicationStatus(app._id, "rejected")
-                        }
-                        disabled={isLoading}
-                      >
-                        Reject
-                      </button>
+                    )}
+                  </div>
+                  {showModal && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/20 backdrop-blur-sm">
+                      <div className="bg-white rounded-xl p-6 w-full max-w-lg space-y-4 border border-black overflow-y-auto max-h-[80vh] relative">
+                        <h2 className="text-xl font-semibold text-start">
+                          Submissions
+                        </h2>
+
+                        {jobSubmissions.length === 0 ? (
+                          <p className="text-sm text-gray-600">
+                            No submissions available.
+                          </p>
+                        ) : (
+                          jobSubmissions.map((submission) => (
+                            <div key={submission._id} className="space-y-4">
+                              {submission.submissions.map((sub, idx) => (
+                                <div
+                                  key={idx}
+                                  className="border border-black rounded-md p-4"
+                                >
+                                  <h3 className="font-semibold text-sm mb-2">
+                                    Milestone {idx + 1}
+                                  </h3>
+                                  <p className="text-sm mb-2">
+                                    {sub.submissionDescription}
+                                  </p>
+                                  <div className="flex flex-wrap gap-2">
+                                    {sub.proofLinks.map((link, linkIdx) => (
+                                      <a
+                                        key={linkIdx}
+                                        href={link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="px-2 py-1 bg-black cursor-pointer text-white rounded"
+                                      >
+                                        Proof {linkIdx + 1}
+                                      </a>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ))
+                        )}
+
+                        {/* Close Button */}
+                        <div className="flex justify-end space-x-2 mt-4">
+                          <button
+                            onClick={() => setShowModal(false)}
+                            className="block mb-3 p-3 bg-black text-white text-[12px] text-center rounded-3xl font-[600] w-[8rem]  cursor-pointer"
+                          >
+                            Close
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       ) : Object.keys(groupedApplications).length > 0 ? (
         Object.entries(groupedApplications).map(([jobTitle, apps]) => {
           const firstApp = apps[0];
+          const jobSubmissions = getSubmissionsForJob(
+            jobTitle,
+            firstApp.jobDescription
+          );
 
           return (
             <div
@@ -212,6 +311,19 @@ const Applications = () => {
               <p className="font-medium text-[12px] text-black">
                 {firstApp.jobDescription}
               </p>
+
+              {/* Show submission status if submissions exist */}
+
+              {/* {jobSubmissions.length > 0 && (
+                <div className="bg-gray-100 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2">Submission Status:</h4>
+                  {jobSubmissions.map((submission) => (
+                    <div key={submission._id}>
+                      {renderMilestones(submission.milestones)}
+                    </div>
+                  ))}
+                </div>
+              )} */}
 
               <div className="flex flex-wrap justify-between gap-2">
                 <button
