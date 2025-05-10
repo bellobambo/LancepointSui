@@ -24,7 +24,10 @@ const Header = () => {
             height={32}
             className="h-6 w-6 sm:h-8 sm:w-8"
           />
-          <span className="ml-2 font-semibold text-base sm:text-lg">
+          <span
+            className="ml-2 plus-jakarta-sans-myf font-bold text-3xl sm:text-lg"
+            style={{ fontSize: "30px" }}
+          >
             Lancepoint
           </span>
         </div>
@@ -33,32 +36,31 @@ const Header = () => {
         {/* <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 ml-20 mr-auto">
           <Link
             href="/"
-            className="header-nav-color hover:text-gray-600 text-[16px] font-semibold lg:text-base"
+            className="header-nav-color  font-semibold lg:text-base"
           >
-            Home
+            About Us
           </Link>
           <Link
             href="/jobs"
-            className="header-nav-color hover:text-gray-600 text-[16px] font-semibold lg:text-base"
+            className="header-nav-color  font-semibold lg:text-base"
           >
             Jobs
           </Link>
           <Link
             href="/payments"
-            className="header-nav-color hover:text-gray-600 text-[16px] font-semibold lg:text-base"
+            className="header-nav-color   font-semibold lg:text-base"
           >
-            Payments
+            Contact
           </Link>
         </nav> */}
 
         {/* Sign Up Button */}
         <div className="hidden md:block">
-          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-between">
             <ZKLogin />
           </div>
         </div>
 
-        {/* Mobile Menu Button */}
         <div className="md:hidden ml-auto">
           <button
             onClick={toggleMenu}
@@ -99,7 +101,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden mt-4 py-2">
           <nav className="flex flex-col space-y-3">
