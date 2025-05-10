@@ -14,8 +14,8 @@ const Header = () => {
 
   return (
     <header className="py-4 px-4 sm:px-6 md:px-12 lg:px-20">
-      <div className="flex items-center">
- 
+      <div className="flex items-center justify-between">
+        {/* Logo */}
         <div className="flex items-center">
           <Image
             src="/icons/logo.svg"
@@ -24,13 +24,16 @@ const Header = () => {
             height={32}
             className="h-6 w-6 sm:h-8 sm:w-8"
           />
-          <span className="ml-2 plus-jakarta-sans-myf font-bold text-3xl sm:text-lg" style={{fontSize: "30px"}}>
+          <span
+            className="ml-2 plus-jakarta-sans-myf font-bold text-3xl sm:text-lg"
+            style={{ fontSize: "30px" }}
+          >
             Lancepoint
           </span>
         </div>
 
-       
-        <nav className="hidden md:flex plus-jakarta-sans-myf items-center space-x-4 lg:space-x-8 ml-20 mr-auto">
+        {/* Desktop Navigation */}
+        {/* <nav className="hidden md:flex items-center space-x-4 lg:space-x-8 ml-20 mr-auto">
           <Link
             href="/"
             className="header-nav-color  font-semibold lg:text-base"
@@ -49,16 +52,15 @@ const Header = () => {
           >
             Contact
           </Link>
-        </nav>
+        </nav> */}
 
- 
+        {/* Sign Up Button */}
         <div className="hidden md:block">
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-between">
             <ZKLogin />
           </div>
         </div>
 
-  
         <div className="md:hidden ml-auto">
           <button
             onClick={toggleMenu}
@@ -99,11 +101,12 @@ const Header = () => {
         </div>
       </div>
 
-   
       {isMenuOpen && (
         <div className="md:hidden mt-4 py-2">
           <nav className="flex flex-col space-y-3">
-            <Link
+            <ZKLogin />
+
+            {/* <Link
               href="/"
               className="text-black hover:text-gray-600 text-[16px] font-semibold"
             >
@@ -120,16 +123,16 @@ const Header = () => {
               className="text-black hover:text-gray-600 text-[16px] font-semibold"
             >
               Payments
-            </Link>
+            </Link> */}
           </nav>
-          <div className="mt-4">
+          {/* <div className="mt-4">
             <Link
               href="/signup"
               className="inline-block bg-black text-white rounded-full px-6 py-2 text-sm font-medium hover:bg-gray-800 transition duration-300"
             >
               Sign up
             </Link>
-          </div>
+          </div> */}
         </div>
       )}
     </header>

@@ -36,7 +36,11 @@ export async function GET() {
       throw new Error("Database connection failed");
     }
 
-    const applications = await collection.find({}).toArray();
+    const applications = await collection
+      .find({})
+      .sort({ createdAt: -1 })
+      .toArray();
+
     return NextResponse.json(applications);
   } catch (error) {
     console.error("Error fetching applications:", error);
