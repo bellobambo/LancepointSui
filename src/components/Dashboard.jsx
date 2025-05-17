@@ -206,7 +206,7 @@ export default function Dashboard() {
 
           <div className="bg-white p-6 md:p-8 rounded-lg shadow-md space-y-6 w-full">
             <div className="text-2xl font-semibold text-left">
-              Revenue Chart ({paymentToken})
+              Revenue Chart
             </div>
 
             <div className="w-full h-[400px]">

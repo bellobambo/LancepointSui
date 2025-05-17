@@ -2,11 +2,12 @@
 
 import { useZkLogin, beginZkLogin } from "use-sui-zklogin";
 import { SuiClient, getFullnodeUrl } from "@mysten/sui.js/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react"; // Added useCallback
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { registerWithZKLogin } from "@/actions/auth";
 import { SuiWalletIntegration } from "@/components/SuiWallet";
+import { ConnectButton } from "@suiet/wallet-kit";
 
 const providersConfig = {
   google: {
@@ -57,6 +58,30 @@ export default function ZKLogin() {
     setMounted(true);
   }, []);
 
+  const handleRegistration = useCallback(
+    async (walletAddress, zksub) => {
+      setIsRegistering(true);
+      try {
+        const result = await registerWithZKLogin(zksub, walletAddress);
+
+        if (result?.error) {
+          toast.error(result.error);
+        } else if (result?.success) {
+          setRegistrationCompleted(true);
+          if (pathname === "/") {
+            router.push("/dashboard");
+          }
+        }
+      } catch (error) {
+        console.error("Registration error:", error);
+        toast.error("Failed to register user");
+      } finally {
+        setIsRegistering(false);
+      }
+    },
+    [pathname, router]
+  );
+
   useEffect(() => {
     setLocalIsLoaded(isLoaded);
     setLocalAddress(address);
@@ -65,34 +90,13 @@ export default function ZKLogin() {
     if (isLoaded && address && accounts?.[0]?.sub && !registrationCompleted) {
       handleRegistration(address, accounts[0].sub);
     }
-  }, [isLoaded, address, accounts, registrationCompleted]);
-
-  const handleRegistration = async (walletAddress, zksub) => {
-    setIsRegistering(true);
-    try {
-      const result = await registerWithZKLogin(zksub, walletAddress);
-
-      if (result?.error) {
-        toast.error(result.error);
-      } else if (result?.success) {
-        setRegistrationCompleted(true);
-        if (pathname === "/") {
-          router.push("/dashboard");
-        }
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      toast.error("Failed to register user");
-    } finally {
-      setIsRegistering(false);
-    }
-  };
+  }, [isLoaded, address, accounts, registrationCompleted, handleRegistration]);
 
   useEffect(() => {
     if (localAddress && pathname === "/" && registrationCompleted) {
       router.push("/dashboard");
     }
-  }, [localAddress, pathname, registrationCompleted]);
+  }, [localAddress, pathname, registrationCompleted, router]);
 
   useEffect(() => {
     if (!mounted || !localAddress) return;
@@ -166,20 +170,29 @@ export default function ZKLogin() {
 
   return (
     <div className="space-y-4 flex justify-end items-center gap-2">
-      {isHomePage && !localAddress ? (
-        <button
-          onClick={() => handleZkLogin("google")}
-          disabled={isLoggingIn || !localIsLoaded || isRegistering}
-          className="bg-black text-white flex justify-end rounded-md py-2 px-4 font-medium transition duration-300 text-center cursor-pointer"
-        >
-          {isLoggingIn
-            ? "Logging in..."
-            : isRegistering
-            ? "Setting up account..."
-            : localIsLoaded
-            ? "Login with ZK"
-            : "Loading..."}
-        </button>
+      {isHomePage ? (
+        !localAddress ? (
+          <button
+            onClick={() => handleZkLogin("google")}
+            disabled={isLoggingIn || !localIsLoaded || isRegistering}
+            className="bg-black text-white flex justify-end rounded-md py-2 px-4 font-medium transition duration-300 text-center cursor-pointer"
+          >
+            {isLoggingIn
+              ? "Logging in..."
+              : isRegistering
+              ? "Setting up account..."
+              : localIsLoaded
+              ? "Login with ZK"
+              : "Loading..."}
+          </button>
+        ) : (
+          <a
+            className="bg-black text-white flex justify-end rounded-md py-2 px-4 font-medium transition duration-300 text-center cursor-pointer"
+            href="/dashboard"
+          >
+            Dashboard
+          </a>
+        )
       ) : null}
 
       {localAddress ? (
@@ -204,13 +217,20 @@ export default function ZKLogin() {
         </div>
       ) : null}
       <div className="flex items-center space-x-4">
-        <button
+        {/* <button
           onClick={handleClearState}
           className="bg-white border hover:bg-black hover:text-white px-3 py-2 text-sm rounded cursor-pointer transition text-black"
         >
           Logout
-        </button>
-        {!isHomePage && <SuiWalletIntegration />}
+        </button> */}
+        {!isHomePage && (
+          <ConnectButton
+            style={{
+              backgroundColor: "skyblue",
+              color: "white",
+            }}
+          />
+        )}
       </div>
     </div>
   );
