@@ -92,7 +92,7 @@ export default function Sidebar() {
             />
           </svg>
         ) : (
-          <div className="bg-white flex items-center">
+          <div className="bg-white flex items-center cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6 text-black"
@@ -171,11 +171,10 @@ export default function Sidebar() {
           }`}
       >
         <div
-          className={`text-2xl p-6 text-white font-bold flex items-center ${
+          className={`text-2xl p-6 text-white font-bold flex items-center cursor-pointer ${
             isCollapsed && !isMobile ? "justify-center" : "space-x-2"
           }`}
         >
-          {/* <img src="/Lance@3x3.png" alt="Logo" className="w-6 h-6 app-font" /> */}
           {(!isCollapsed || isMobile) && (
             <span className="flex items-center">
               <img
@@ -194,13 +193,13 @@ export default function Sidebar() {
                 href={link.href}
                 className={`flex app-font items-center ${
                   isCollapsed && !isMobile ? "justify-center" : "gap-3"
-                } p-4 rounded-md text-[16px] font-medium
-        ${
-          pathname === link.href ? "bg-black text-white" : "text-white"
-        } transition-colors duration-200
-      `}
+                } p-4 rounded-md text-[16px] font-medium transition-colors duration-200
+                  ${
+                    pathname === link.href
+                      ? "bg-[#2d3436] text-white shadow-md" // Current page styling
+                      : "text-[#b2bec3] hover:bg-[#2d3436] hover:text-white" // Default and hover styling
+                  }`}
               >
-                {/* Updated icon rendering */}
                 {typeof link.icon === "string" ? (
                   <img
                     src={link.icon}

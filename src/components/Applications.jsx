@@ -223,13 +223,13 @@ ${proofList}`;
               return (
                 <div
                   key={app._id}
-                  className="bg-white min-h-[25rem] w-[24rem] p-4 rounded-2xl shadow-md flex flex-col justify-between"
+                  className="bg-white  h-[25rem] w-full max-w-[24rem] p-4 rounded-2xl shadow-md flex flex-col justify-between"
                 >
                   <div>
-                    <h3 className="font-bold text-lg">{app.name}</h3>
+                    <h3 className="font-bold text-lg truncate">{app.name}</h3>
 
                     <div className="flex gap-2 my-2">
-                      <div className="p-1 bg-black text-white text-[12px] text-center rounded-[20px] font-[600] min-w-[9rem]">
+                      <div className="p-1 bg-black text-white text-[12px] text-center rounded-[20px] font-[600] min-w-[9rem] truncate">
                         {app.services[0]}
                       </div>
                     </div>
@@ -239,14 +239,14 @@ ${proofList}`;
                     </p>
                   </div>
 
-                  <div className="flex justify-between items-end">
-                    <div className="mt-4 ">
+                  <div className="flex justify-between items-end mt-auto gap-2 flex-wrap">
+                    <div className="flex flex-col gap-2 w-full max-w-[8rem]">
                       {app.portfolioLink && (
                         <a
                           href={app.portfolioLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block mb-3 p-3 bg-black text-white text-[12px] text-center rounded-3xl font-[600] w-[8rem]"
+                          className="p-2 bg-black text-white text-[12px] text-center rounded-3xl font-[600] w-full"
                         >
                           Portfolio
                         </a>
@@ -255,19 +255,19 @@ ${proofList}`;
                       {app.status === "accepted" ||
                       app.status === "rejected" ? (
                         <div
-                          className={`text-center py-2 rounded-3xl font-semibold  ${
+                          className={`text-center py-2 rounded-3xl font-semibold w-full ${
                             app.status === "accepted"
-                              ? "bg-green-100 text-green-800 w-[8rem]"
-                              : "bg-red-100 text-red-800 w-[8rem]"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
                           }`}
                         >
                           {app.status.charAt(0).toUpperCase() +
                             app.status.slice(1)}
                         </div>
                       ) : (
-                        <div className="flex gap-4">
+                        <div className="flex flex-col gap-2">
                           <button
-                            className={`bg-black text-white px-4 py-2 rounded-3xl w-[8rem] cursor-pointer ${
+                            className={`bg-black text-white px-4 py-2 rounded-3xl w-full cursor-pointer ${
                               isLoading ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                             onClick={() =>
@@ -278,7 +278,7 @@ ${proofList}`;
                             Accept
                           </button>
                           <button
-                            className={`bg-white border border-black text-black px-4 py-2 rounded-3xl w-[8rem] cursor-pointer ${
+                            className={`bg-white border border-black text-black px-4 py-2 rounded-3xl w-full cursor-pointer ${
                               isLoading ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                             onClick={() =>
@@ -291,17 +291,20 @@ ${proofList}`;
                         </div>
                       )}
                     </div>
-                    {jobSubmissions.length > 0 && (
+
+                    {jobSubmissions.length > 0 && app.status !== "rejected" && (
                       <button
                         onClick={() => setShowModal(true)}
-                        className="px-4 py-2 bg-black cursor-pointer text-white rounded"
+                        className="px-4 py-2 bg-black text-white rounded-xl text-sm w-full max-w-[10rem] mt-2"
                       >
                         View Submissions
                       </button>
                     )}
                   </div>
+
+                  {/* Modal */}
                   {showModal && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/20 backdrop-blur-sm">
+                    <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/20 backdrop-blur-sm px-4">
                       <div className="bg-white rounded-xl p-6 w-full max-w-lg space-y-4 border border-black overflow-y-auto max-h-[80vh] relative">
                         <h2 className="text-xl font-semibold text-start">
                           Submissions
@@ -332,7 +335,7 @@ ${proofList}`;
                                         href={link}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="px-2 py-1 bg-black cursor-pointer text-white rounded"
+                                        className="px-2 py-1 bg-black text-white rounded text-xs"
                                       >
                                         Proof {linkIdx + 1}
                                       </a>
@@ -349,30 +352,30 @@ ${proofList}`;
                             AI Submission Review
                           </h3>
 
-                          <div className="flex flex-col md:flex-row gap-3 mb-6">
+                          <div className="flex flex-col mb-6">
                             <input
                               value={input}
                               placeholder="Ask something about the submission..."
                               onChange={handleInputChange}
-                              className="border border-gray-300 rounded-xl px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-black"
+                              className="border border-gray-300 rounded-xl px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-black mb-4"
                             />
 
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-2">
                               <button
                                 onClick={() => {
                                   const submissionPrompt =
                                     generateSubmissionPrompt(jobSubmissions);
                                   handleAIReview(submissionPrompt);
                                 }}
-                                className="bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-900 transition"
+                                className="cursor-pointer bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-900 transition w-full sm:w-auto"
                               >
-                                Review Submission with AI
+                                Review Directly with AI
                               </button>
 
                               <button
                                 onClick={handleAIReview}
                                 disabled={!input.trim() || isAiThinking}
-                                className="bg-white border border-black text-black px-4 py-2 rounded-xl hover:bg-black hover:text-white transition disabled:opacity-50"
+                                className="cursor-pointer bg-white border border-black text-black px-4 py-2 rounded-xl hover:bg-black hover:text-white transition disabled:opacity-50 w-full sm:w-auto"
                               >
                                 {isAiThinking ? "Thinking..." : "Send"}
                               </button>
@@ -400,10 +403,10 @@ ${proofList}`;
                           )}
                         </div>
 
-                        <div className="flex justify-end space-x-2 mt-4">
+                        <div className="flex justify-end mt-4">
                           <button
                             onClick={() => setShowModal(false)}
-                            className="block mb-3 p-3 bg-black text-white text-[12px] text-center rounded-3xl font-[600] w-[8rem]  cursor-pointer"
+                            className="p-3 bg-black text-white text-[12px] text-center rounded-3xl font-[600] w-[8rem]"
                           >
                             Close
                           </button>
@@ -427,7 +430,7 @@ ${proofList}`;
           return (
             <div
               key={firstApp._id}
-              className="bg-white p-6 rounded-lg shadow-md space-y-6 w-full max-w-[54rem]"
+              className="bg-white mt-[3rem] p-6 rounded-lg shadow-md space-y-6 w-full max-w-[54rem]"
             >
               <div className="text-2xl font-semibold text-left">{jobTitle}</div>
 
