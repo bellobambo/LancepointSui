@@ -162,9 +162,11 @@ export default function ZKLogin() {
     );
   }
 
+  const isHomePage = pathname === "/";
+
   return (
-    <div className="space-y-4 flex justify-end">
-      {/* {!localAddress ? (
+    <div className="space-y-4 flex justify-end items-center gap-2">
+      {isHomePage && !localAddress ? (
         <button
           onClick={() => handleZkLogin("google")}
           disabled={isLoggingIn || !localIsLoaded || isRegistering}
@@ -178,35 +180,38 @@ export default function ZKLogin() {
             ? "Login with ZK"
             : "Loading..."}
         </button>
-      ) : (
-        <div className="space-y-2">
+      ) : null}
+
+      {localAddress ? (
+        <div className="space-y-2 ">
           <div>
-            <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-4 flex-wrap ">
               <button
                 onClick={handleCopyAddress}
-                className="bg-black  text-white px-3 py-1 rounded text-sm cursor-pointer"
+                className="bg-black text-white px-3 py-1 rounded text-sm cursor-pointer hidden"
               >
                 {shortenAddress(localAddress)}
               </button>
-              <p className="text-sm text-black ">
+              <p className="text-sm text-black hidden">
                 {isLoadingBalance
                   ? "Loading..."
                   : balance === "Error"
                   ? "Error fetching balance"
                   : `${formatBalance(balance)} SUI`}
               </p>
-              <button
-                onClick={handleClearState}
-                className="bg-white border hover:bg-black hover:text-white  px-3 py-1 text-sm rounded cursor-pointer transition text-black"
-              >
-                Logout
-              </button>
             </div>
           </div>
         </div>
-      )} */}
-
-      <SuiWalletIntegration />
+      ) : null}
+      <div className="flex items-center space-x-4">
+        <button
+          onClick={handleClearState}
+          className="bg-white border hover:bg-black hover:text-white px-3 py-2 text-sm rounded cursor-pointer transition text-black"
+        >
+          Logout
+        </button>
+        {!isHomePage && <SuiWalletIntegration />}
+      </div>
     </div>
   );
 }
