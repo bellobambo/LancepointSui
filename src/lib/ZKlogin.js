@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { registerWithZKLogin } from "@/actions/auth";
+import { SuiWalletIntegration } from "@/components/SuiWallet";
 
 const providersConfig = {
   google: {
@@ -163,7 +164,7 @@ export default function ZKLogin() {
 
   return (
     <div className="space-y-4 flex justify-end">
-      {!localAddress ? (
+      {/* {!localAddress ? (
         <button
           onClick={() => handleZkLogin("google")}
           disabled={isLoggingIn || !localIsLoaded || isRegistering}
@@ -203,7 +204,9 @@ export default function ZKLogin() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
+
+      <SuiWalletIntegration />
     </div>
   );
 }

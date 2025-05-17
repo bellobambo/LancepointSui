@@ -11,6 +11,9 @@ const Applications = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [submissions, setSubmissions] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [aiMessages, setAiMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [isAiThinking, setIsAiThinking] = useState(false);
 
   const { accounts } = useZkLogin({
     urlZkProver: "https://prover-dev.mystenlabs.com/v1",
@@ -20,6 +23,81 @@ const Applications = () => {
   });
 
   const zksub = accounts?.[0]?.sub;
+
+  const handleAIReview = async (prompt) => {
+    try {
+      if (!zksub) {
+        toast.error(
+          "Wallet address not found. Please connect your wallet first"
+        );
+        return;
+      }
+
+      setIsAiThinking(true);
+      const userMessage = {
+        role: "user",
+        content: `Please review the following submission:\n\n${prompt}`,
+      };
+      setAiMessages((prev) => [...prev, userMessage]);
+      setInput("");
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [...aiMessages, userMessage],
+          walletAddress: zksub,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to get AI response");
+      }
+
+      const data = await response.json();
+      const aiMessage = { role: "assistant", content: data.text };
+      setAiMessages((prev) => [...prev, aiMessage]);
+
+      // Handle any on-chain actions returned from the AI
+      if (data.toolResults && data.toolResults.length > 0) {
+        await handleOnChainActions(data.toolResults, zksub);
+      }
+    } catch (error) {
+      console.error("AI review error:", error);
+      toast.error(error.message || "AI failed to review");
+    } finally {
+      setIsAiThinking(false);
+    }
+  };
+
+  const generateSubmissionPrompt = (submissions) => {
+    if (!submissions || submissions.length === 0)
+      return "No submissions available.";
+
+    return submissions
+      .map((submission, submissionIdx) => {
+        return submission.submissions
+          .map((milestone, idx) => {
+            const proofList = milestone.proofLinks
+              .map((link, i) => `- [Proof ${i + 1}](${link})`)
+              .join("\n");
+
+            return `Milestone ${idx + 1}:
+Description: ${milestone.submissionDescription}
+Proofs:
+${proofList}`;
+          })
+          .join("\n\n");
+      })
+      .join("\n\n");
+  };
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+  };
 
   const fetchApplications = async () => {
     try {
@@ -266,7 +344,62 @@ const Applications = () => {
                           ))
                         )}
 
-                        {/* Close Button */}
+                        <div className="mt-6 pt-4 border-t">
+                          <h3 className="mb-4 text-lg font-semibold text-gray-800">
+                            AI Submission Review
+                          </h3>
+
+                          <div className="flex flex-col md:flex-row gap-3 mb-6">
+                            <input
+                              value={input}
+                              placeholder="Ask something about the submission..."
+                              onChange={handleInputChange}
+                              className="border border-gray-300 rounded-xl px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-black"
+                            />
+
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  const submissionPrompt =
+                                    generateSubmissionPrompt(jobSubmissions);
+                                  handleAIReview(submissionPrompt);
+                                }}
+                                className="bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-900 transition"
+                              >
+                                Review Submission with AI
+                              </button>
+
+                              <button
+                                onClick={handleAIReview}
+                                disabled={!input.trim() || isAiThinking}
+                                className="bg-white border border-black text-black px-4 py-2 rounded-xl hover:bg-black hover:text-white transition disabled:opacity-50"
+                              >
+                                {isAiThinking ? "Thinking..." : "Send"}
+                              </button>
+                            </div>
+                          </div>
+
+                          {aiMessages.length > 0 && (
+                            <div className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200 max-h-[300px] overflow-y-auto">
+                              {aiMessages.map((message, index) => (
+                                <div
+                                  key={index}
+                                  className={`max-w-[80%] px-4 py-2 rounded-lg text-sm ${
+                                    message.role === "user"
+                                      ? "bg-black text-white ml-auto"
+                                      : "bg-white border border-gray-300 text-gray-800"
+                                  }`}
+                                >
+                                  <strong>
+                                    {message.role === "user" ? "You" : "AI"}:
+                                  </strong>{" "}
+                                  {message.content}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
                         <div className="flex justify-end space-x-2 mt-4">
                           <button
                             onClick={() => setShowModal(false)}
