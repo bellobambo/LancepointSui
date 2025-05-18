@@ -14,7 +14,7 @@ export function SuiProvider({ children }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SuiClientProvider networks={networks} defaultNetwork="devnet">
+      <SuiClientProvider networks={networks} defaultNetwork="mainnet">
         <WalletProvider>
           {children}
           <Toaster position="top-center" reverseOrder={false} />
